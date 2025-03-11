@@ -1,0 +1,66 @@
+analyze_job_task:
+  description: >
+    Analyser la description du poste et évaluer l'adéquation du candidat en fonction de son CV.
+    Sortie en JSON structuré.
+
+    1. Extraire les exigences : compétences techniques, générales, expérience, éducation, connaissance du secteur.
+    2. Évaluer les compétences techniques et générales.
+    3. Évaluer l'expérience et l'éducation.
+    4. Calculer le score global.
+
+  expected_output: >
+    Données JSON structurées contenant l'analyse du poste et les détails de l'évaluation.
+  agent: job_analyzer
+  context: [analyze_job_task]
+
+optimize_resume_task:
+  description: >
+    Examiner le CV fourni en fonction de l'analyse du poste et créer des suggestions d'optimisation structurées.
+    Sortie en JSON structuré.
+
+    1. Analyser le contenu et la structure du CV.
+    2. Générer des suggestions d'amélioration.
+
+  expected_output: >
+    Données JSON structurées contenant des suggestions d'optimisation détaillées.
+  agent: resume_analyzer
+  context: [analyze_job_task]
+
+research_company_task:
+  description: >
+    Rechercher des informations sur l'entreprise et préparer une analyse complète.
+    Sortie en JSON structuré.
+
+    1. Présentation de l'entreprise : développements récents, culture, position sur le marché.
+    2. Préparation à l'entretien : questions courantes, sujets spécifiques, projets récents.
+
+  expected_output: >
+    Données JSON structurées contenant les résultats de la recherche sur l'entreprise.
+  agent: company_researcher
+  context: [analyze_job_task, optimize_resume_task]
+
+generate_resume_task:
+  description: >
+    Utiliser les suggestions d'optimisation et l'analyse du poste pour créer un CV poli au format markdown.
+    Ne pas ajouter de blocs de code markdown comme '```'.
+
+    1. Intégrer les suggestions d'optimisation.
+    2. Formater le CV en markdown.
+
+  expected_output: >
+    Un document de CV au format markdown bien présenté, incorporant toutes les suggestions d'optimisation.
+  agent: resume_writer
+  context: [optimize_resume_task, analyze_job_task, research_company_task]
+
+generate_report_task:
+  description: >
+    Créer un rapport de synthèse exécutif en utilisant les données des étapes précédentes.
+    Formater en markdown sans blocs de code '```'.
+
+    1. Intégrer les données : analyse du poste, optimisation du CV, insights sur l'entreprise.
+    2. Structurer le rapport : résumé exécutif, analyse de l'adéquation, aperçu de l'optimisation, insights sur l'entreprise, prochaines étapes.
+
+  expected_output: >
+    Un rapport markdown complet combinant toutes les analyses en un document clair et exploitable.
+  agent: report_generator
+  context: [analyze_job_task, optimize_resume_task, research_company_task]
