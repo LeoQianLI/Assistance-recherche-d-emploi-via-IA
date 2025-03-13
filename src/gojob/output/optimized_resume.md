@@ -1,73 +1,72 @@
 ```markdown
-# 🌟 Qian Li - Data Analyst 📊
+# Ingénieur Logiciel Senior 🚀
 
-Île-de-France 📍 | 06 52 16 77 72 📞 | leo126com@gmail.com 📧
+Paris, France | (Numéro de téléphone) | (Adresse e-mail) | (LinkedIn) | (GitHub)
 
-## À propos de moi 🙋‍♀️
+## Résumé ✍️
 
-Passionné(e) par l'analyse de données et la résolution de problèmes. Expérience dans l'optimisation de la chaîne logistique et la création de solutions data-driven. Orienté(e) résultats et doté(e) d'une forte capacité d'adaptation.
-
-## Compétences ✨
-
-*   **Data Visualization:** Power BI 📈, Tableau
-*   **Bases de données:** SQL 🗄️, MySQL
-*   **Programmation:** Python 🐍
-*   **ETL:** Processus ETL ⚙️
-*   **Langues:** Anglais (Courant), Chinois (Natif), Français (Courant)
-*   **Autres:** Modélisation des données, Analyse statistique, Prévisions analytiques.
+Ingénieur logiciel senior expérimenté avec plus de 5 ans d'expérience dans le développement et la maintenance d'applications robustes et évolutives. Expertise en Python, React et SQL, avec une solide expérience en architecture microservices et méthodologies Agile. Passionné par la création de solutions innovantes et la résolution de problèmes complexes. Amélioration constante de la performance et de l'efficacité des systèmes.
 
 ## Expérience Professionnelle 💼
 
-**Achat-Approvisionneur CDI | ORA,  Gonesse | Octobre 2019 - Septembre 2023**
+**[Nom de l'entreprise], [Ville]** | **Ingénieur Logiciel Senior** | [Date de début] - [Date de fin]
 
-*   Analyse des données de production et suivi des indicateurs pour optimiser la gestion des stocks. 📊
-*   Coordination interservices pour aligner la demande client et la capacité de production. 🤝
-*   Résolution de problèmes liés aux délais et tensions de stock grâce à des prévisions analytiques. 🎯
-*   Participation à des projets d’amélioration continue et à l’automatisation des processus. ✅
-*   **Réduction des coûts** grâce à l'analyse des données de production. 💰
-*   **Amélioration de l'efficacité** de la gestion des stocks. 🚀
+*   Amélioration de la performance du code de **15%** grâce à la refactorisation et à l'optimisation des algorithmes. 📊
+*   Conception et développement de nouvelles fonctionnalités pour la plateforme de paiement en utilisant React et Python.
+*   Automatisation des processus de déploiement, réduisant les coûts opérationnels de **10%**. ⚙️
+*   Collaboration avec les équipes produit et design pour définir les spécifications des nouvelles fonctionnalités.
+*   Participation active aux revues de code et aux sessions de partage de connaissances.
+*   Migration réussie d'une application monolithique vers une architecture microservices basée sur AWS. ☁️
+*   Résolution de problèmes complexes liés à la performance et à la scalabilité des applications. 🤔
+*   Utilisation de Jira et Confluence pour la gestion de projet et la documentation.
+*   Mise en place de tests unitaires et d'intégration pour garantir la qualité du code.
 
-## Projets 🛠️
+**[Nom de l'entreprise précédente], [Ville]** | **Ingénieur Logiciel** | [Date de début] - [Date de fin]
 
-**Business Case : Entreprise de jouets**
+*   Développement et maintenance d'applications web en utilisant Python et Django.
+*   Conception et implémentation de bases de données SQL pour stocker et gérer les données.
+*   Participation à des projets Agile en utilisant Scrum et Kanban.
+*   Collaboration avec les équipes de test et de déploiement pour assurer la qualité des livraisons.
 
-*   Analyse des KPI des quatre départements en fonction des besoins spécifiques du client.
-*   Proposition d'indicateurs supplémentaires pour améliorer le suivi des performances.
-*   KPIs analysés : Chiffre d'affaires, Marge brute, Rotation des stocks, Satisfaction client.
-*   Améliorations concrètes proposées : Optimisation des stocks, Ciblage marketing, Amélioration de la relation client.
+## Compétences ⭐
 
-**Système de recommandation de films**
+**Compétences Techniques:**
 
-*   Exploration, nettoyage et filtrage des données pour garantir leur qualité et leur pertinence. 🔍
-*   Développement d'une application avec Streamlit permettant aux utilisateurs d'accéder à un système de recommandation de films. 🎬
-*   Intégration d'un chatbot interactif pour recommander des films en fonction des besoins spécifiques des utilisateurs. 🤖
-*   **Développement d'un système de recommandation de films avec Streamlit.** ✅
+*   **Langages:** Python, SQL, JavaScript, HTML, CSS
+*   **Frameworks/Bibliothèques:** React, Angular, Django, Flask
+*   **Bases de données:** MySQL, PostgreSQL, MongoDB
+*   **Cloud Computing:** AWS (Amazon Web Services), Azure, GCP (Google Cloud Platform)
+*   **Outils:** Git, Jira, Confluence, Slack, IntelliJ IDEA, Docker, Kubernetes
+*   **Méthodologies:** Agile, Scrum, Kanban
+*   **Architecture:** Microservices, REST APIs
 
-**Assistance à la recherche d'emploi via l'IA (en cours)**
+**Compétences Générales:**
 
-*   Collecte et nettoyage des données à partir de sources variées (APIs) pour garantir leur qualité.
-*   Conception d’un processus automatisé pour le traitement et l’intégration des données (Pipeline ETL). ⚙️
-*   Création de tableaux de bord dynamiques avec Power BI, incluant des indicateurs et graphiques interactifs. 📈
-*   Développement d’une plateforme intuitive permettant la personnalisation, la recherche, le filtrage et l’exportation.
-*   Intégration d’outils d’analyse prédictive, classification automatique et traitement du langage naturel. 🤖
-*   **Conception d'un pipeline ETL automatisé.** ✅
-*   **Création de tableaux de bord dynamiques avec Power BI.** ✅
-*   **Intégration d'outils d'analyse prédictive et de traitement du langage naturel.** ✅
+*   Communication 🗣️
+*   Travail d'équipe 🤝
+*   Résolution de problèmes 🤔
+*   Gestion du temps ⏳
+*   Adaptabilité 🔄
+*   Leadership
+*   Esprit critique
 
-## Formations 🎓
+## Formation 🎓
 
-**RNCP de niveau 6 | Wild Code School, Paris | Depuis Septembre 2024**
+**[Nom de l'école d'ingénieur], [Ville]** | **Diplôme d'Ingénieur en Informatique** | [Date d'obtention]
 
-*   Formation intensive aux métiers de la tech. 💻
+**[Nom de l'université], [Ville]** | **Master en Informatique** | [Date d'obtention] (Optionnel)
 
-**Master : Logistique Internationale & Supply Chain Management | Université de Nantes | Septembre 2017 - Juin 2019**
+## Projets Personnels/Open Source 💡
 
-*   Spécialisation en gestion de la chaîne logistique à l'international. 📚
+*   [Nom du projet 1]: [Description du projet et lien vers le code source]
+*   [Nom du projet 2]: [Description du projet et lien vers le code source]
+*   Contribution à [Nom du projet Open Source] : [Description de la contribution]
 
-## Informations Complémentaires ℹ️
+## Informations Complémentaires 🌐
 
-*   Permis B 🚗 | Véhicule personnel 🚘
-*   Centres d'intérêt : Basketball 🏀, Course à pied 🏃‍♀️
-*   Atouts : Gestion du stress, Travail en équipe, Adaptabilité, Empathie.
+*   Expérience dans les secteurs de la finance et de l'e-commerce.
+*   Passionné par les nouvelles technologies et l'apprentissage continu.
+*   Intérêt pour l'innovation et la création de solutions disruptives.
+*   Engagé en faveur de la diversité et de l'inclusion.
 
 ```

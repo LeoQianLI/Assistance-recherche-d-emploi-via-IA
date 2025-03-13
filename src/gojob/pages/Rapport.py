@@ -216,8 +216,8 @@ les candidats aux entretiens.🟢 **TOUTES VOS RÉPONSES DOIVENT ÊTRE EN FRANÇ
     gojob.crew().kickoff()
 
     # Afficher le rapport final which is in the src/gojob/output/final_report.md
-    report_file = "/Users/yanjin/training/ai/gojob/src/gojob/output/final_report.md"
-    optimized_resume_file = "/Users/yanjin/training/ai/gojob/src/gojob/output/optimized_resume.md"
+    report_file = r"C:\Users\leo12\Documents\Projet3\Assistance-recherche-d-emploi-via-IA\src\gojob\output\final_report.md"
+    optimized_resume_file = r"C:\Users\leo12\Documents\Projet3\Assistance-recherche-d-emploi-via-IA\src\gojob\output\optimized_resume.md"
     if os.path.exists(report_file) and os.path.exists(optimized_resume_file):
         with open(report_file, "r", encoding="utf-8") as file:
             final_report = file.read()
