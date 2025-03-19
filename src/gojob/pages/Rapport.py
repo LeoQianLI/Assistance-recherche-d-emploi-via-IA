@@ -1,24 +1,39 @@
 import tempfile
 import streamlit as st
 import os
+import time
 from crewai_tools import FileReadTool, MDXSearchTool, SerperDevTool, ScrapeWebsiteTool
 from crewai import Agent, Crew, Process, Task, LLM
 from crewai.project import CrewBase, agent, crew, task
 from models_st import JobRequirements, ResumeOptimization, CompanyResearch
+from litellm.exceptions import RateLimitError
+
+def retry_with_backoff(func, max_retries=3, initial_delay=1):
+    """Retry a function with exponential backoff"""
+    delay = initial_delay
+    for attempt in range(max_retries):
+        try:
+            return func()
+        except RateLimitError as e:
+            if attempt == max_retries - 1:
+                raise e
+            st.warning(f"Rate limit reached. Retrying in {delay} seconds... (Attempt {attempt + 1}/{max_retries})")
+            time.sleep(delay)
+            delay *= 2  # Exponential backoff
 
 # create a liens related to the resume_text in the file crewai_st.py
 
 if "resume_text" in st.session_state and st.session_state.resume_text:
     resume_text = st.session_state['selected_job']
     resume_t = st.session_state.resume_text
-    # Créer un fichier temporaire pour le contenu du CV
+    # Create a temporary file for CV content
     with tempfile.NamedTemporaryFile(
         delete=False, suffix=".txt", mode="w", encoding="utf-8"
     ) as temp_file:
         temp_file.write(resume_t)
         temp_file_path = temp_file.name
 
-    # Initialiser les outils avec le fichier temporaire
+    # Initialize tools with temporary file
     read_resume = FileReadTool(file_path=temp_file_path)
     sematic_search_resume = MDXSearchTool(mdx=temp_file_path)
 
@@ -29,7 +44,6 @@ if "resume_text" in st.session_state and st.session_state.resume_text:
         @agent
         def resume_analyzer(self) -> Agent:
             return Agent(
-                # config=self.agents_config["resume_analyzer"],
                 verbose=True,
                 groq_llm=LLM(model="gemini/gemini-2.0-flash-exp", system_prompt="Répondez uniquement en français."),
                 tools=[read_resume, sematic_search_resume],
@@ -44,7 +58,6 @@ sur la lisibilité humaine et la compatibilité ATS.🟢 **TOUTES VOS RÉPONSES 
         @agent
         def job_analyzer(self) -> Agent:
             return Agent(
-                # config=self.agents_config["job_analyzer"],
                 verbose=True,
                 tools=[ScrapeWebsiteTool(),read_resume, sematic_search_resume],
                 groq_llm=LLM(model="gemini/gemini-2.0-flash-exp"),
@@ -59,7 +72,6 @@ compétences techniques et générales, et pouvez évaluer avec précision les n
         @agent
         def company_researcher(self) -> Agent:
             return Agent(
-                # config=self.agents_config["company_researcher"],
                 verbose=True,
                 tools=[SerperDevTool(), read_resume, sematic_search_resume],
                 groq_llm=LLM(model="gemini/gemini-2.0-flash-exp"),
@@ -74,7 +86,6 @@ les candidats aux entretiens.🟢 **TOUTES VOS RÉPONSES DOIVENT ÊTRE EN FRANÇ
         @agent
         def resume_writer(self) -> Agent:
             return Agent(
-                # config=self.agents_config["resume_writer"],
                 verbose=True,
                 llm=LLM(model="gemini/gemini-2.0-flash-exp"),
                 tools=[SerperDevTool(), read_resume, sematic_search_resume],
@@ -89,7 +100,6 @@ les candidats aux entretiens.🟢 **TOUTES VOS RÉPONSES DOIVENT ÊTRE EN FRANÇ
         @agent
         def report_generator(self) -> Agent:
             return Agent(
-                # config=self.agents_config["report_generator"],
                 verbose=True,
                 llm=LLM(model="gemini/gemini-2.0-flash-exp"),
                 tools=[SerperDevTool(), read_resume, sematic_search_resume],
@@ -105,11 +115,9 @@ les candidats aux entretiens.🟢 **TOUTES VOS RÉPONSES DOIVENT ÊTRE EN FRANÇ
         @task
         def analyze_job_task(self) -> Task:
             return Task(
-                # config=self.tasks_config["analyze_job_task"],
                 agent=self.job_analyzer(),
                 output_file="output/job_analysis.json",
                 output_pydantic=JobRequirements,
-                # description=self.tasks_config["analyze_job_task"]["description"],
                 description="""Analyser la description du poste et évaluer l'adéquation du candidat en fonction de son CV.
                                 Sortie en JSON structuré.
                                 Ajouter des emojis et des éléments visuels pour améliorer la lisibilité.
@@ -124,7 +132,6 @@ les candidats aux entretiens.🟢 **TOUTES VOS RÉPONSES DOIVENT ÊTRE EN FRANÇ
         @task
         def optimize_resume_task(self) -> Task:
             return Task(
-                # config=self.tasks_config["optimize_resume_task"],
                 agent=self.resume_analyzer(),
                 output_file="output/resume_optimization.json",
                 output_pydantic=ResumeOptimization,
@@ -142,7 +149,6 @@ les candidats aux entretiens.🟢 **TOUTES VOS RÉPONSES DOIVENT ÊTRE EN FRANÇ
         @task
         def research_company_task(self) -> Task:
             return Task(
-                # config=self.tasks_config["research_company_task"],
                 agent=self.company_researcher(),
                 output_file="output/company_research.json",
                 output_pydantic=CompanyResearch,
@@ -160,20 +166,25 @@ les candidats aux entretiens.🟢 **TOUTES VOS RÉPONSES DOIVENT ÊTRE EN FRANÇ
             return Task(
                 agent=self.resume_writer(),
                 output_file="output/optimized_resume.md",
-                description="""Utiliser les suggestions d'optimisation et l'analyse du poste pour créer un CV poli au format markdown.
-                                Ne pas ajouter de blocs de code markdown comme '```'.
-                                Ajouter des emojis et des éléments visuels pour améliorer la lisibilité.
-                                Si la longueur de la phrase atteint 94 caractères, veuillez passer la ligne suivante.
-                                1. Intégrer les suggestions d'optimisation.
-                                2. Formater le CV en PDF,
-                                3. LE CV DOIT ÊTRE GÉNÉRÉ EN FRANÇAIS SEULEMENT.""",
-                expected_output="""Un document de CV au format markdown bien présenté, incorporant toutes les suggestions d'optimisation.""",
-                context= [self.optimize_resume_task(),  self.analyze_job_task(), self.research_company_task()]
-)
+                description=f"""Utiliser le contenu du CV original et les suggestions d'optimisation pour créer un CV optimisé en markdown.
+                                Contenu du CV original:
+                                {resume_t}
+                                
+                                Instructions:
+                                1. Intégrer le contenu original du CV
+                                2. Appliquer les suggestions d'optimisation
+                                3. Formater en markdown
+                                4. Ajouter des emojis et des éléments visuels
+                                5. LE CV DOIT ÊTRE GÉNÉRÉ EN FRANÇAIS SEULEMENT
+                                6. Ne pas ajouter de blocs de code markdown comme '```'
+                                7. Si la longueur de la phrase atteint 94 caractères, passer à la ligne suivante""",
+                expected_output="Un document de CV au format markdown bien présenté, incorporant le contenu original et les suggestions d'optimisation.",
+                context= [self.optimize_resume_task(), self.analyze_job_task(), self.research_company_task()]
+            )
+
         @task
         def generate_report_task(self) -> Task:
             return Task(
-                # config=self.tasks_config["generate_report_task"],
                 agent=self.report_generator(),
                 output_file="output/final_report.md",
                 description="""Créer un rapport de synthèse exécutif en utilisant les données des étapes précédentes.
@@ -211,22 +222,37 @@ les candidats aux entretiens.🟢 **TOUTES VOS RÉPONSES DOIVENT ÊTRE EN FRANÇ
                 tools=[read_resume, sematic_search_resume],
             )
 
-    # Exécuter le crew
-    gojob = Gojob()
-    gojob.crew().kickoff()
+    try:
+        # Execute the crew with retry logic
+        gojob = Gojob()
+        crew_instance = gojob.crew()
+        
+        def execute_crew():
+            return crew_instance.kickoff()
+        
+        # Execute with retry logic
+        result = retry_with_backoff(execute_crew)
 
-    # Afficher le rapport final which is in the src/gojob/output/final_report.md
-    report_file = r"C:\Users\leo12\Documents\Projet3\Assistance-recherche-d-emploi-via-IA\src\gojob\output\final_report.md"
-    optimized_resume_file = r"C:\Users\leo12\Documents\Projet3\Assistance-recherche-d-emploi-via-IA\src\gojob\output\optimized_resume.md"
-    if os.path.exists(report_file) and os.path.exists(optimized_resume_file):
-        with open(report_file, "r", encoding="utf-8") as file:
-            final_report = file.read()
-        with open(optimized_resume_file, "r", encoding="utf-8") as file:
-            optimized_resume = file.read()
-        st.markdown(final_report, unsafe_allow_html=True)
-        st.markdown(optimized_resume, unsafe_allow_html=True)
-        st.success("Rapport généré avec succès!")
-
-    else:
-        st.error(f"Le fichier de rapport {report_file} n'existe pas.")
+        # Display the final report and optimized resume
+        report_file = r"C:\Users\leo12\Documents\Projet3\Assistance-recherche-d-emploi-via-IA\src\gojob\output\final_report.md"
+        optimized_resume_file = r"C:\Users\leo12\Documents\Projet3\Assistance-recherche-d-emploi-via-IA\src\gojob\output\optimized_resume.md"
+        
+        if os.path.exists(report_file) and os.path.exists(optimized_resume_file):
+            with open(report_file, "r", encoding="utf-8") as file:
+                final_report = file.read()
+            with open(optimized_resume_file, "r", encoding="utf-8") as file:
+                optimized_resume = file.read()
+            st.markdown(final_report, unsafe_allow_html=True)
+            st.markdown(optimized_resume, unsafe_allow_html=True)
+            st.success("Rapport généré avec succès!")
+        else:
+            st.error(f"Le fichier de rapport {report_file} n'existe pas.")
+            
+    except RateLimitError as e:
+        st.error("""Nous avons atteint la limite de requêtes pour le moment. 
+                   Veuillez réessayer dans quelques minutes ou utiliser un autre modèle d'IA.""")
+        st.error(f"Erreur détaillée: {str(e)}")
+    except Exception as e:
+        st.error("Une erreur inattendue s'est produite. Veuillez réessayer.")
+        st.error(f"Erreur détaillée: {str(e)}")
 

@@ -1,72 +1,77 @@
 ```markdown
-# Ingénieur Logiciel Senior 🚀
+# Qian LI 👨‍💻
+Data Analyst | Passionné par l'analyse de données
 
-Paris, France | (Numéro de téléphone) | (Adresse e-mail) | (LinkedIn) | (GitHub)
+📍 Drancy (93700) | 📞 06 52 16 77 72 | ✉️ leo126com@gmail.com | 🚗 Permis B & Véhicule Personnel | 🌍 Ile-de-France | [LinkedIn](your_linkedin_profile) | [GitHub](your_github_profile)
 
-## Résumé ✍️
+## À propos de moi 💡
 
-Ingénieur logiciel senior expérimenté avec plus de 5 ans d'expérience dans le développement et la maintenance d'applications robustes et évolutives. Expertise en Python, React et SQL, avec une solide expérience en architecture microservices et méthodologies Agile. Passionné par la création de solutions innovantes et la résolution de problèmes complexes. Amélioration constante de la performance et de l'efficacité des systèmes.
+Passionné par l'analyse de données, je souhaite mettre mes compétences en exploitation, visualisation et interprétation des données au service d'une entreprise pour l'aider à optimiser sa prise de décision. Mon objectif est de transformer des données complexes en insights pertinents afin d'améliorer la performance opérationnelle et stratégique. Curieux et rigoureux, je cherche à évoluer dans un environnement stimulant où je pourrai contribuer à des projets innovants en data analytiques.
 
-## Expérience Professionnelle 💼
+## Compétences 🛠️
 
-**[Nom de l'entreprise], [Ville]** | **Ingénieur Logiciel Senior** | [Date de début] - [Date de fin]
+*   **Informatique :** Power BI, MySQL, Python
+*   **Cloud :** AWS, GCP, Azure
+*   **DevOps :** Docker, Kubernetes, Terraform, CI/CD pipelines
+*   **Autres :** Infrastructure as Code, Monitoring and Alerting
+*   **Langues :** Français (Langue maternelle), Anglais (Courant), Chinois (Notions)
 
-*   Amélioration de la performance du code de **15%** grâce à la refactorisation et à l'optimisation des algorithmes. 📊
-*   Conception et développement de nouvelles fonctionnalités pour la plateforme de paiement en utilisant React et Python.
-*   Automatisation des processus de déploiement, réduisant les coûts opérationnels de **10%**. ⚙️
-*   Collaboration avec les équipes produit et design pour définir les spécifications des nouvelles fonctionnalités.
-*   Participation active aux revues de code et aux sessions de partage de connaissances.
-*   Migration réussie d'une application monolithique vers une architecture microservices basée sur AWS. ☁️
-*   Résolution de problèmes complexes liés à la performance et à la scalabilité des applications. 🤔
-*   Utilisation de Jira et Confluence pour la gestion de projet et la documentation.
-*   Mise en place de tests unitaires et d'intégration pour garantir la qualité du code.
+## Expériences Professionnelles 💼
 
-**[Nom de l'entreprise précédente], [Ville]** | **Ingénieur Logiciel** | [Date de début] - [Date de fin]
+**Achat - Approvisionneur | ORA | Octobre 2019 - Septembre 2023**
 
-*   Développement et maintenance d'applications web en utilisant Python et Django.
-*   Conception et implémentation de bases de données SQL pour stocker et gérer les données.
-*   Participation à des projets Agile en utilisant Scrum et Kanban.
-*   Collaboration avec les équipes de test et de déploiement pour assurer la qualité des livraisons.
+*   Analyse des données de production et suivi des indicateurs pour optimiser la gestion des stocks. 📈
+*   Coordination interservices pour aligner la demande client et la capacité de production.
+*   Résolution de problèmes liés aux délais et tensions de stock grâce à des prévisions analytiques.
+*   Participation à des projets d'amélioration continue et à l'automatisation des processus. ⚙️
 
-## Compétences ⭐
+## Projets 📂
 
-**Compétences Techniques:**
+**Business Case : Entreprise de jouets**
 
-*   **Langages:** Python, SQL, JavaScript, HTML, CSS
-*   **Frameworks/Bibliothèques:** React, Angular, Django, Flask
-*   **Bases de données:** MySQL, PostgreSQL, MongoDB
-*   **Cloud Computing:** AWS (Amazon Web Services), Azure, GCP (Google Cloud Platform)
-*   **Outils:** Git, Jira, Confluence, Slack, IntelliJ IDEA, Docker, Kubernetes
-*   **Méthodologies:** Agile, Scrum, Kanban
-*   **Architecture:** Microservices, REST APIs
+*   Analyse des KPI des quatre départements en fonction des besoins spécifiques du client et proposition d'indicateurs supplémentaires pour améliorer le suivi des performances.
+*   [Lien vers le projet](LeoQianLI/Business-Case-Entreprise-de-jouets)
 
-**Compétences Générales:**
+**Système de recommandation de films**
 
-*   Communication 🗣️
-*   Travail d'équipe 🤝
-*   Résolution de problèmes 🤔
-*   Gestion du temps ⏳
-*   Adaptabilité 🔄
-*   Leadership
-*   Esprit critique
+*   Exploration, nettoyage et filtrage des données pour garantir leur qualité et leur pertinence.
+*   Développement d'une application avec Streamlit permettant aux utilisateurs d'accéder à un système de recommandation de films. L'application intègre un chatbot interactif pour recommander des films en fonction des besoins spécifiques des utilisateurs.
+*   [Lien vers le projet](LeoQianLI/Systeme-de-recommandation-des-films)
 
-## Formation 🎓
+**Assistance à la recherche d'emploi via l'IA**
 
-**[Nom de l'école d'ingénieur], [Ville]** | **Diplôme d'Ingénieur en Informatique** | [Date d'obtention]
+*   **Données :** Collecte et nettoyage à partir de sources variées (APIs) pour garantir leur qualité.
+*   **Visualisation :** Création de tableaux de bord dynamiques avec Power BI, incluant des indicateurs et graphiques interactifs.
+*   **Interface utilisateur :** Développement d'une plateforme intuitive permettant la personnalisation, la recherche, le filtrage et l'exportation.
+*   **IA :** Intégration d’outils d’analyse prédictive, classification automatique et traitement du langage naturel pour enrichir et exploiter les données.
+*   [Lien vers le projet](LeoQianLI/Assistance-recher che-d-emploi-via-IA)
 
-**[Nom de l'université], [Ville]** | **Master en Informatique** | [Date d'obtention] (Optionnel)
+## Formations 🎓
 
-## Projets Personnels/Open Source 💡
+**RNCP de niveau 6 | Wild Code School | Depuis Septembre 2024**
 
-*   [Nom du projet 1]: [Description du projet et lien vers le code source]
-*   [Nom du projet 2]: [Description du projet et lien vers le code source]
-*   Contribution à [Nom du projet Open Source] : [Description de la contribution]
+*   L'école de formation qui forme aux métiers tech.
 
-## Informations Complémentaires 🌐
+**BAC +5 Master : Logistique Internationale & Supply Chain Management | Université de Nantes | Septembre 2017 - Juin 2019**
 
-*   Expérience dans les secteurs de la finance et de l'e-commerce.
-*   Passionné par les nouvelles technologies et l'apprentissage continu.
-*   Intérêt pour l'innovation et la création de solutions disruptives.
-*   Engagé en faveur de la diversité et de l'inclusion.
+## Atouts ✨
 
+*   Gérer son stress
+*   Travailler en équipe 🤝
+*   Adaptabilité dans des environnements multiculturels 🌍
+*   Être à l'écoute, faire preuve d'empathie ❤️
+
+## Centres d'intérêt 🏀 🏃
+
+*   Basketball
+*   Course à pied
+
+---
+**Réalisations:**
+
+*   Réduction des coûts d'infrastructure grâce à l'optimisation des ressources cloud. 💸
+*   Amélioration de la performance des applications grâce à l'automatisation des déploiements. 🚀
+*   Contribution à la mise en place d'une infrastructure CI/CD robuste et efficace. ✅
+*   Participation active à des revues de code et à l'amélioration continue des processus de développement. 💡
+*   Collaboration réussie avec différentes équipes pour assurer la stabilité et la scalabilité de la plateforme. 🤝
 ```

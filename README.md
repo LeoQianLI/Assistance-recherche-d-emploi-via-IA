@@ -1,27 +1,84 @@
-l'objectif de fournir une solution innovante pour l’analyse du marché de l’emploi dans la DATA. En mettant en œuvre des techniques modernes de collecte, traitement, et automatisation des données, ce projet permet de répondre aux besoins des clients en termes de recherche d’offres d’emploi, d’analyse de tendances, et d’intégration de fonctionnalités IA.
+# 🤖 Assistant IA pour la Recherche d'Emploi
 
-Le projet est organisé en plusieurs phases, allant de la collecte initiale des données à la présentation finale via une interface utilisateur interactive.
-![image](https://github.com/user-attachments/assets/53161b94-0293-4628-8594-4bfcc56e1272)
+## 📝 Description du Projet
+Ce projet est un assistant intelligent qui aide les chercheurs d'emploi à optimiser leur recherche et à améliorer leurs candidatures. L'application utilise l'Intelligence Artificielle pour analyser les CV, les descriptions de postes et fournir des recommandations personnalisées.
 
+## 🏗️ Architecture du Projet
 
-Phases de Développement
-Collecte et Extraction des Données
+### 1. Collecte de Données
+- **Sources de données**: Sites de recherche d'emploi (scraping via Selenium)
+- **Stockage**: Base de données vectorielle Qdrant (cloud)
+- **Technologies**: Python, Selenium, Qdrant
 
-Technologies : Python, requests, Selenium.
-Objectif : Récupérer les offres d’emploi via APIs et scraping, et collecter d’autres données associées (CV, etc.).
-Traitement et Nettoyage des Données
+### 2. Analyse et Traitement
+- **Analyse de CV**: Extraction et analyse des informations clés
+- **Matching de Postes**: Comparaison entre CV et descriptions de postes
+- **Optimisation**: Suggestions d'amélioration basées sur l'IA
 
-Technologies : Python, pandas.
-Objectif : Nettoyer, dédupliquer et standardiser les données pour créer un modèle de données optimal.
-Automatisation ETL
+### 3. Interface Utilisateur
+- **Framework**: Streamlit
+- **Langues**: Support multilingue (Français, Anglais, Chinois)
+- **Design**: Interface intuitive et responsive
 
-Technologies : Qdrant.
-Objectif : Centraliser et sécuriser les données tout en assurant leur accessibilité.
-Interface Utilisateur
+## 🚀 Fonctionnalités Principales
 
-Technologies : Streamlit
-Objectif : Offrir une interface intuitive pour présenter les résultats et permettre aux utilisateurs d’interagir avec les données.
-Fonctionnalités IA
+### Analyse de CV
+- 📄 Analyse détaillée du contenu du CV
+- 🎯 Identification des points forts et des axes d'amélioration
+- 🔍 Optimisation pour les systèmes ATS
 
-Technologies : Python, API des IAs (Gemini), Crewai.
-Objectif : Fournir des analyses de marché, des recommandations et des interactions IA suivant les besoins des user.
+### Recherche d'Emploi
+- 🔎 Recherche intelligente de postes correspondants
+- 📊 Score de compatibilité entre CV et postes
+- 🎯 Suggestions de postes pertinents
+
+### Optimisation de Candidature
+- ✍️ Suggestions d'amélioration du CV
+- 🎯 Personnalisation selon le poste cible
+- 📈 Optimisation pour les systèmes de recrutement
+
+### Recherche d'Entreprise
+- 🏢 Analyse des entreprises cibles
+- 📊 Informations sur la culture d'entreprise
+- 💡 Préparation aux entretiens
+
+## 🛠️ Technologies Utilisées
+- **Backend**: Python, CrewAI, Pydantic
+- **Base de données**: Qdrant (vectorielle)
+- **IA**: Vertex AI, Gemini
+- **Web Scraping**: Selenium
+- **Frontend**: Streamlit
+- **Outils**: FileReadTool, MDXSearchTool, SerperDevTool
+
+## 📊 Structure des Données
+- **CV**: Stockage et analyse des informations du candidat
+- **Postes**: Base de données des offres d'emploi scrapées
+- **Entreprises**: Informations sur les entreprises cibles
+- **Analyses**: Résultats des analyses et recommandations
+
+## 🔄 Processus de Fonctionnement
+1. Upload du CV par l'utilisateur
+2. Analyse du CV par l'IA
+3. Recherche de postes correspondants dans la base Qdrant
+4. Génération de recommandations personnalisées
+5. Création d'un rapport détaillé
+
+## 🎯 Points d'Amélioration Futurs
+- Optimisation des performances du scraping
+- Amélioration de la précision des analyses
+- Ajout de nouvelles sources de données
+- Expansion des fonctionnalités d'analyse
+- Optimisation de l'utilisation des ressources IA
+
+## 🚀 Installation et Utilisation
+1. Cloner le repository
+2. Installer les dépendances
+3. Configurer les variables d'environnement
+4. Lancer l'application
+
+## 📝 Contribution
+Les contributions sont les bienvenues ! N'hésitez pas à :
+- Signaler des bugs
+- Proposer des améliorations
+- Contribuer au code
+- Améliorer la documentation
