@@ -8,8 +8,35 @@ from crewai.project import CrewBase, agent, crew, task
 from models_st import JobRequirements, ResumeOptimization, CompanyResearch
 from litellm.exceptions import RateLimitError
 
-def retry_with_backoff(func, max_retries=3, initial_delay=1):
-    """Retry a function with exponential backoff"""
+def get_llm(model_name, system_prompt=None):
+    """Get LLM instance with fallback options"""
+    try:
+        # Try to get model from environment variable
+        model = os.getenv("LLM_MODEL", "gpt-3.5-turbo")
+        return LLM(model=model, system_prompt=system_prompt)
+    except Exception as e:
+        st.warning(f"Failed to initialize {model_name}, trying fallback models...")
+        # Try different fallback models in order of preference
+        fallback_models = [
+            "gpt-3.5-turbo",  # OpenAI (gratuit avec limite)
+            "claude-2",       # Anthropic (gratuit avec limite)
+            "mistral/mistral-7b-instruct",  # Mistral (gratuit)
+            "gemini/gemini-1.0-pro"  # Google (gratuit avec limite)
+        ]
+        
+        for fallback_model in fallback_models:
+            try:
+                st.info(f"Attempting to use {fallback_model} as fallback...")
+                return LLM(model=fallback_model, system_prompt=system_prompt)
+            except Exception as inner_e:
+                st.warning(f"Failed to initialize {fallback_model}: {str(inner_e)}")
+                continue
+        
+        # If all fallbacks fail, raise the original error
+        raise e
+
+def retry_with_backoff(func, max_retries=3, initial_delay=5):
+    """Retry a function with exponential backoff and longer delays"""
     delay = initial_delay
     for attempt in range(max_retries):
         try:
@@ -20,6 +47,8 @@ def retry_with_backoff(func, max_retries=3, initial_delay=1):
             st.warning(f"Rate limit reached. Retrying in {delay} seconds... (Attempt {attempt + 1}/{max_retries})")
             time.sleep(delay)
             delay *= 2  # Exponential backoff
+            if delay > 30:  # Cap the maximum delay at 30 seconds
+                delay = 30
 
 # create a liens related to the resume_text in the file crewai_st.py
 
@@ -45,7 +74,7 @@ if "resume_text" in st.session_state and st.session_state.resume_text:
         def resume_analyzer(self) -> Agent:
             return Agent(
                 verbose=True,
-                groq_llm=LLM(model="gemini/gemini-2.0-flash-exp", system_prompt="Répondez uniquement en français."),
+                groq_llm=get_llm("resume_analyzer", "Répondez uniquement en français."),
                 tools=[read_resume, sematic_search_resume],
                 role="Expert en optimisation de CV",
                 goal="Analyser les CV et fournir des suggestions d'optimisation structurées en français",
@@ -60,7 +89,7 @@ sur la lisibilité humaine et la compatibilité ATS.🟢 **TOUTES VOS RÉPONSES 
             return Agent(
                 verbose=True,
                 tools=[ScrapeWebsiteTool(),read_resume, sematic_search_resume],
-                groq_llm=LLM(model="gemini/gemini-2.0-flash-exp"),
+                groq_llm=get_llm("job_analyzer"),
                 role="Analyste des exigences de poste",
                 goal="Analyser les descriptions de poste et évaluer l'adéquation des candidats en français",
                 backstory="""Vous êtes un expert en analyse du marché du travail et en évaluation des candidats. Votre force
@@ -74,7 +103,7 @@ compétences techniques et générales, et pouvez évaluer avec précision les n
             return Agent(
                 verbose=True,
                 tools=[SerperDevTool(), read_resume, sematic_search_resume],
-                groq_llm=LLM(model="gemini/gemini-2.0-flash-exp"),
+                groq_llm=get_llm("company_researcher"),
                 role="Spécialiste en intelligence d'entreprise",
                 goal="Rechercher des informations sur les entreprises et préparer des insights pour les entretiens en français",
                 backstory="""Vous êtes un expert en recherche d'entreprise qui excelle dans la collecte et l'analyse
@@ -87,7 +116,7 @@ les candidats aux entretiens.🟢 **TOUTES VOS RÉPONSES DOIVENT ÊTRE EN FRANÇ
         def resume_writer(self) -> Agent:
             return Agent(
                 verbose=True,
-                llm=LLM(model="gemini/gemini-2.0-flash-exp"),
+                llm=get_llm("resume_writer"),
                 tools=[SerperDevTool(), read_resume, sematic_search_resume],
                 role="Spécialiste en rédaction de CV en markdown",
                 goal="Créer des CV formatés en markdown, optimisés pour les ATS en français",
@@ -101,7 +130,7 @@ les candidats aux entretiens.🟢 **TOUTES VOS RÉPONSES DOIVENT ÊTRE EN FRANÇ
         def report_generator(self) -> Agent:
             return Agent(
                 verbose=True,
-                llm=LLM(model="gemini/gemini-2.0-flash-exp"),
+                llm=get_llm("report_generator"),
                 tools=[SerperDevTool(), read_resume, sematic_search_resume],
                 role="Générateur de rapports de carrière et spécialiste du markdown",
                 goal="Créer des rapports complets, visuellement attrayants et exploitables à partir de l'analyse des candidatures en français",
@@ -230,8 +259,8 @@ les candidats aux entretiens.🟢 **TOUTES VOS RÉPONSES DOIVENT ÊTRE EN FRANÇ
         def execute_crew():
             return crew_instance.kickoff()
         
-        # Execute with retry logic
-        result = retry_with_backoff(execute_crew)
+        # Execute with retry logic and longer initial delay
+        result = retry_with_backoff(execute_crew, max_retries=3, initial_delay=5)
 
         # Display the final report and optimized resume
         report_file = r"C:\Users\leo12\Documents\Projet3\Assistance-recherche-d-emploi-via-IA\src\gojob\output\final_report.md"
@@ -250,8 +279,20 @@ les candidats aux entretiens.🟢 **TOUTES VOS RÉPONSES DOIVENT ÊTRE EN FRANÇ
             
     except RateLimitError as e:
         st.error("""Nous avons atteint la limite de requêtes pour le moment. 
-                   Veuillez réessayer dans quelques minutes ou utiliser un autre modèle d'IA.""")
+                   Le système va essayer d'utiliser un autre modèle d'IA.
+                   Si le problème persiste, veuillez réessayer dans quelques minutes.
+                   Conseil: Attendez environ 5 minutes avant de réessayer.""")
         st.error(f"Erreur détaillée: {str(e)}")
+        # Try to reinitialize with a different model
+        try:
+            st.info("Tentative de réinitialisation avec un modèle alternatif...")
+            gojob = Gojob()
+            crew_instance = gojob.crew()
+            result = crew_instance.kickoff()
+            st.success("Opération réussie avec le modèle alternatif!")
+        except Exception as fallback_error:
+            st.error("Échec de l'utilisation du modèle alternatif. Veuillez réessayer plus tard.")
+            st.error(f"Erreur détaillée: {str(fallback_error)}")
     except Exception as e:
         st.error("Une erreur inattendue s'est produite. Veuillez réessayer.")
         st.error(f"Erreur détaillée: {str(e)}")
