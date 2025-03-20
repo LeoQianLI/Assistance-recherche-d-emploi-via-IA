@@ -2,6 +2,6 @@
 __pycache__/
 .DS_Store
 src/gojob/pages/db
-src/gojob/tools/model_cache
+src/gojob/tools/model_cache/models--sentence-transformers--roberta-large-nli-stsb-mean-tokens
 src/gojob/db
 src/gojob/pages/db
