@@ -2,68 +2,72 @@ import tempfile
 import streamlit as st
 import os
 import time
+import codecs
 from crewai_tools import FileReadTool, MDXSearchTool, SerperDevTool, ScrapeWebsiteTool
 from crewai import Agent, Crew, Process, Task, LLM
 from crewai.project import CrewBase, agent, crew, task
 from models_st import JobRequirements, ResumeOptimization, CompanyResearch
 from litellm.exceptions import RateLimitError
 
-def get_llm(model_name, system_prompt=None):
-    """Get LLM instance with fallback options"""
-    try:
-        # Try to get model from environment variable
-        model = os.getenv("LLM_MODEL", "gpt-3.5-turbo")
-        return LLM(model=model, system_prompt=system_prompt)
-    except Exception as e:
-        st.warning(f"Failed to initialize {model_name}, trying fallback models...")
-        # Try different fallback models in order of preference
-        fallback_models = [
-            "gpt-3.5-turbo",  # OpenAI (gratuit avec limite)
-            "claude-2",       # Anthropic (gratuit avec limite)
-            "mistral/mistral-7b-instruct",  # Mistral (gratuit)
-            "gemini/gemini-1.0-pro"  # Google (gratuit avec limite)
-        ]
-        
-        for fallback_model in fallback_models:
-            try:
-                st.info(f"Attempting to use {fallback_model} as fallback...")
-                return LLM(model=fallback_model, system_prompt=system_prompt)
-            except Exception as inner_e:
-                st.warning(f"Failed to initialize {fallback_model}: {str(inner_e)}")
-                continue
-        
-        # If all fallbacks fail, raise the original error
-        raise e
-
-def retry_with_backoff(func, max_retries=3, initial_delay=5):
-    """Retry a function with exponential backoff and longer delays"""
-    delay = initial_delay
-    for attempt in range(max_retries):
+# Créer une classe personnalisée pour lire les fichiers avec un encodage spécifique
+class CustomFileReadTool(FileReadTool):
+    def _read_file(self, file_path):
+        """Lit le fichier avec l'encodage UTF-8."""
         try:
-            return func()
-        except RateLimitError as e:
-            if attempt == max_retries - 1:
-                raise e
-            st.warning(f"Rate limit reached. Retrying in {delay} seconds... (Attempt {attempt + 1}/{max_retries})")
-            time.sleep(delay)
-            delay *= 2  # Exponential backoff
-            if delay > 30:  # Cap the maximum delay at 30 seconds
-                delay = 30
+            with codecs.open(file_path, 'r', encoding='utf-8') as file:
+                return file.read()
+        except Exception as e:
+            return f"Error: Failed to read file {file_path}. {str(e)}"
+
+def get_llm(role_name):
+    """Fonction pour obtenir un LLM avec repli en cas d'erreur"""
+    # Liste des modèles à essayer dans l'ordre
+    models_to_try = [
+        "gemini/gemini-2.0-flash-exp",
+        "gpt-3.5-turbo",
+        "claude-2",
+        "mistral/mistral-7b-instruct"
+    ]
+    
+    # Essayer chaque modèle jusqu'à ce qu'un fonctionne
+    for model in models_to_try:
+        try:
+            # st.info(f"Tentative d'utilisation du modèle {model} pour {role_name}...")
+            return LLM(model=model)
+        except Exception as e:
+            st.warning(f"Échec avec le modèle {model}: {str(e)}")
+            continue
+    
+    # Si aucun modèle ne fonctionne, lever une exception
+    raise Exception("Aucun modèle LLM disponible n'a pu être initialisé.")
 
 # create a liens related to the resume_text in the file crewai_st.py
 
 if "resume_text" in st.session_state and st.session_state.resume_text:
     resume_text = st.session_state['selected_job']
     resume_t = st.session_state.resume_text
-    # Create a temporary file for CV content
+    # Créer un fichier temporaire pour le contenu du CV
     with tempfile.NamedTemporaryFile(
         delete=False, suffix=".txt", mode="w", encoding="utf-8"
     ) as temp_file:
         temp_file.write(resume_t)
         temp_file_path = temp_file.name
+    
+    # Vérifier que le fichier temporaire existe et est accessible
+    if not os.path.exists(temp_file_path):
+        st.error(f"Le fichier temporaire {temp_file_path} n'existe pas.")
+    else:
+        # st.info(f"Fichier temporaire créé avec succès: {temp_file_path}")
+        # Essayer de lire le fichier pour vérifier qu'il est accessible
+        try:
+            with open(temp_file_path, "r", encoding="utf-8") as f:
+                _ = f.read()
+            # st.success("Lecture du fichier temporaire réussie.")
+        except Exception as e:
+            st.error(f"Erreur lors de la lecture du fichier temporaire: {str(e)}")
 
-    # Initialize tools with temporary file
-    read_resume = FileReadTool(file_path=temp_file_path)
+    # Initialiser les outils avec le fichier temporaire et utiliser notre classe personnalisée
+    read_resume = CustomFileReadTool(file_path=temp_file_path)
     sematic_search_resume = MDXSearchTool(mdx=temp_file_path)
 
     @CrewBase
@@ -74,7 +78,7 @@ if "resume_text" in st.session_state and st.session_state.resume_text:
         def resume_analyzer(self) -> Agent:
             return Agent(
                 verbose=True,
-                groq_llm=get_llm("resume_analyzer", "Répondez uniquement en français."),
+                groq_llm=get_llm("resume_analyzer"),
                 tools=[read_resume, sematic_search_resume],
                 role="Expert en optimisation de CV",
                 goal="Analyser les CV et fournir des suggestions d'optimisation structurées en français",
@@ -251,41 +255,120 @@ les candidats aux entretiens.🟢 **TOUTES VOS RÉPONSES DOIVENT ÊTRE EN FRANÇ
                 tools=[read_resume, sematic_search_resume],
             )
 
+    # Fonction pour tenter d'exécuter avec plusieurs tentatives
+    def retry_with_backoff(func, max_retries=3, initial_delay=5):
+        """Exécuter une fonction avec backoff exponentiel en cas d'erreur"""
+        delay = initial_delay
+        for attempt in range(max_retries):
+            try:
+                return func()
+            except RateLimitError as e:
+                if attempt == max_retries - 1:
+                    raise e
+                st.warning(f"Limite de requêtes atteinte. Nouvelle tentative dans {delay} secondes... (Tentative {attempt+1}/{max_retries})")
+                time.sleep(delay)
+            except UnicodeDecodeError as e:
+                st.error(f"Erreur d'encodage: {str(e)}")
+                st.info("Tentative de récupération avec un encodage différent...")
+                if attempt == max_retries - 1:
+                    raise e
+                time.sleep(delay)
+            except Exception as e:
+                st.error(f"Erreur inattendue: {str(e)}")
+                if attempt == max_retries - 1:
+                    raise e
+                time.sleep(delay)
+                delay *= 2  # Backoff exponentiel
+                
     try:
-        # Execute the crew with retry logic
+        if not os.path.exists("output"):
+            os.makedirs("output")
+        
+        output_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "output")
+        if not os.path.exists(output_dir):
+            os.makedirs(output_dir)
+        
         gojob = Gojob()
         crew_instance = gojob.crew()
         
         def execute_crew():
             return crew_instance.kickoff()
         
-        # Execute with retry logic and longer initial delay
         result = retry_with_backoff(execute_crew, max_retries=3, initial_delay=5)
 
-        # Display the final report and optimized resume
-        report_file = r"C:\Users\leo12\Documents\Projet3\Assistance-recherche-d-emploi-via-IA\src\gojob\output\final_report.md"
-        optimized_resume_file = r"C:\Users\leo12\Documents\Projet3\Assistance-recherche-d-emploi-via-IA\src\gojob\output\optimized_resume.md"
+        output_base_dir = os.getcwd()
         
-        if os.path.exists(report_file) and os.path.exists(optimized_resume_file):
-            with open(report_file, "r", encoding="utf-8") as file:
-                final_report = file.read()
-            with open(optimized_resume_file, "r", encoding="utf-8") as file:
-                optimized_resume = file.read()
-            st.markdown(final_report, unsafe_allow_html=True)
-            st.markdown(optimized_resume, unsafe_allow_html=True)
-            st.success("Rapport généré avec succès!")
-        else:
-            st.error(f"Le fichier de rapport {report_file} n'existe pas.")
+        possible_paths = [
+            os.path.join(output_dir, "final_report.md"),
+            os.path.join(output_base_dir, "output", "final_report.md"),
+            "output/final_report.md",
+        ]
+        
+        possible_resume_paths = [
+            os.path.join(output_dir, "optimized_resume.md"),
+            os.path.join(output_base_dir, "output", "optimized_resume.md"),
+            "output/optimized_resume.md",
+        ]
+        
+        report_file = next((path for path in possible_paths if os.path.exists(path)), None)
+        optimized_resume_file = next((path for path in possible_resume_paths if os.path.exists(path)), None)
+        
+        # Ajouter du CSS pour améliorer la lisibilité et éviter le défilement horizontal
+        st.markdown("""
+        <style>
+        .report-container {
+            max-width: 100%;
+            overflow-x: hidden;
+            word-wrap: break-word;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .report-container img {
+            max-width: 100%;
+            height: auto;
+        }
+        .report-container h1, .report-container h2 {
+            color: #0066cc;
+        }
+        .report-container p, .report-container li {
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        </style>
+        """, unsafe_allow_html=True)
+        
+        if report_file and os.path.exists(report_file):
+            try:
+                with open(report_file, "r", encoding="utf-8") as file:
+                    final_report = file.read()
+                st.subheader("Rapport d'Analyse")
+                st.markdown(f'<div class="report-container">{final_report}</div>', unsafe_allow_html=True)
+                st.success("Rapport généré avec succès!")
+            except Exception as e:
+                st.error(f"Erreur lors de la lecture du rapport: {str(e)}")
+                
+        if optimized_resume_file and os.path.exists(optimized_resume_file):
+            try:
+                with open(optimized_resume_file, "r", encoding="utf-8") as file:
+                    optimized_resume = file.read()
+                st.subheader("CV Optimisé")
+                st.markdown(f'<div class="report-container">{optimized_resume}</div>', unsafe_allow_html=True)
+                st.success("CV optimisé généré avec succès!")
+            except Exception as e:
+                st.error(f"Erreur lors de la lecture du CV optimisé: {str(e)}")
             
+        if not report_file and not optimized_resume_file:
+            st.error("Les fichiers de rapport n'ont pas été trouvés.")
+                
     except RateLimitError as e:
-        st.error("""Nous avons atteint la limite de requêtes pour le moment. 
-                   Le système va essayer d'utiliser un autre modèle d'IA.
-                   Si le problème persiste, veuillez réessayer dans quelques minutes.
-                   Conseil: Attendez environ 5 minutes avant de réessayer.""")
+        st.error("Nous avons atteint la limite de requêtes pour le moment. Le système va essayer d'utiliser un autre modèle d'IA.")
         st.error(f"Erreur détaillée: {str(e)}")
-        # Try to reinitialize with a different model
+        
         try:
-            st.info("Tentative de réinitialisation avec un modèle alternatif...")
+            st.info("Tentative d'utilisation d'un modèle alternatif...")
+            os.environ["LLM_MODEL"] = "gpt-3.5-turbo"
             gojob = Gojob()
             crew_instance = gojob.crew()
             result = crew_instance.kickoff()
@@ -293,6 +376,7 @@ les candidats aux entretiens.🟢 **TOUTES VOS RÉPONSES DOIVENT ÊTRE EN FRANÇ
         except Exception as fallback_error:
             st.error("Échec de l'utilisation du modèle alternatif. Veuillez réessayer plus tard.")
             st.error(f"Erreur détaillée: {str(fallback_error)}")
+            
     except Exception as e:
         st.error("Une erreur inattendue s'est produite. Veuillez réessayer.")
         st.error(f"Erreur détaillée: {str(e)}")

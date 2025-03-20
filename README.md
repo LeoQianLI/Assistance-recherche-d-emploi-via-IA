@@ -73,8 +73,26 @@ Ce projet est un assistant intelligent qui aide les chercheurs d'emploi à optim
 ## 🚀 Installation et Utilisation
 1. Cloner le repository
 2. Installer les dépendances
+   ```bash
+   pip install -r requirements.txt
+   ```
 3. Configurer les variables d'environnement
+   - Copiez le fichier `.env.example` en `.env`
+   ```bash
+   cp .env.example .env
+   ```
+   - Remplissez le fichier `.env` avec vos propres clés API
+   - Vous aurez besoin de créer des comptes sur:
+     - [Qdrant Cloud](https://cloud.qdrant.io/) pour la base de données vectorielle
+     - [OpenAI](https://platform.openai.com/) pour GPT
+     - [Google AI Studio](https://ai.google.dev/) pour Gemini
+     - [Anthropic](https://console.anthropic.com/) pour Claude
+     - [SerperDev](https://serper.dev/) pour les recherches
+     - [Hugging Face](https://huggingface.co/) pour les modèles
 4. Lancer l'application
+   ```bash
+   streamlit run src/gojob/crewai_st.py
+   ```
 
 ## 📝 Contribution
 Les contributions sont les bienvenues ! N'hésitez pas à :

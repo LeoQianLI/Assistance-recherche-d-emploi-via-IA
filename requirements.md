@@ -49,4 +49,4 @@ SERPER_API_KEY=your_serper_api_key
 4. Install Pandoc (if not already installed):
    - Windows: Download from https://github.com/jgm/pandoc/releases
    - Linux: `sudo apt-get install pandoc`
-   - macOS: `brew install pandoc` 
+   - macOS: `brew install pandoc`

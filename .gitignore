@@ -1,4 +1,3 @@
 .env
 __pycache__/
 .DS_Store
-qdrant_vector_search_tool.py
