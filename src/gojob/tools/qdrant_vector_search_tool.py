@@ -5,7 +5,6 @@ import streamlit as st
 import os
 from dotenv import load_dotenv
 
-
 class QdrantVectorSearchTool:
     def __init__(self):
         # Charger les variables d'environnement
