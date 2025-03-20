@@ -1,6 +1,7 @@
 .env
 __pycache__/
 .DS_Store
-model_cache/
-db_cache/
-pages/db_cache/
+src/gojob/pages/db
+src/gojob/tools/model_cache
+src/gojob/db
+src/gojob/pages/db
