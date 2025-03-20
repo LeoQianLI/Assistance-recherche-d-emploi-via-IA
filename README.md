@@ -79,7 +79,7 @@ Ce projet est un assistant intelligent qui aide les chercheurs d'emploi à optim
 3. Configurer les variables d'environnement
    - Copiez le fichier `.env.example` en `.env`
    ```bash
-   cp .env.example .env
+   cp .env
    ```
    - Remplissez le fichier `.env` avec vos propres clés API
    - Vous aurez besoin de créer des comptes sur:
